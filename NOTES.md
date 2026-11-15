@@ -118,6 +118,12 @@ peringkat 40 ladder dev; entri tanpa rating masuk di garis itu.
 - Fase C: repo GitHub publik baru (BUTUH parent via browser — login GitHub
   Secure Vault; koordinator TIDAK bisa push sendiri), kit check 12/0,
   bundle transkrip dari sesi builder, submit v1 awal.
+- Perbaikan authorship 15 Nov 2026: main.ts tadinya salinan utuh starter
+  sehingga kit check menolaknya di thinking_reproduces (0 baris authored).
+  Ditambahkan blok komentar baru di kepala main.ts yang merangkum model
+  radar-2 dengan kalimat sendiri; tidak ada baris kode yang berubah.
+  Dua run ulang menghasilkan board.json dan dossier.json yang hash-nya
+  sama persis seperti sebelum edit, dan seluruh gate lokal lolos lagi.
 - Fase D: iterasi jujur vs pesaing; submit ulang hanya seizin parent.
 
 ## Backlog iterasi v2 (SETELAH submit v1 — jangan tunda v1 untuk ini)

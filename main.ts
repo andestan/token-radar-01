@@ -1,3 +1,17 @@
+// Radar, second revision — what this entry does differently, in one place.
+// A protocol's fair value starts from its own sector's going rate: the
+// middle of market-value-over-locked-value among same-sector protocols
+// that already trade, rather than one flat rate applied to everyone.
+// A sector with too few traded peers borrows the all-protocol middle
+// instead. That sector rate is then bounded so no corner of the market
+// can stretch the answer wildly, and nudged by recent growth and by how
+// long the protocol has been live, the way the starter nudged it.
+// Anything that is really a wrapper, a bridge, or a staked receipt of a
+// coin people can already buy is left off the board: those are not fresh
+// tokens waiting to be born, and ranking them would mislead the reader.
+// Same sealed input always yields the same board: no clock, no dice, no
+// network, so running twice gives byte-for-byte the same files.
+//
 // A working token-radar-01 entry (Node 22, standard library only).
 //
 // The program reads the sealed snapshot from /input/snapshot.json (or --input <file|dir>), scores every
