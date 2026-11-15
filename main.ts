@@ -1,15 +1,20 @@
-// Radar, second revision — what this entry does differently, in one place.
-// A protocol's fair value starts from its own sector's going rate: the
-// middle of market-value-over-locked-value among same-sector protocols
-// that already trade, rather than one flat rate applied to everyone.
-// A sector with too few traded peers borrows the all-protocol middle
-// instead. That sector rate is then bounded so no corner of the market
-// can stretch the answer wildly, and nudged by recent growth and by how
-// long the protocol has been live, the way the starter nudged it.
-// Anything that is really a wrapper, a bridge, or a staked receipt of a
-// coin people can already buy is left off the board: those are not fresh
-// tokens waiting to be born, and ranking them would mislead the reader.
-// Same sealed input always yields the same board: no clock, no dice, no
+// Radar, third revision — what this entry does differently, in one place.
+// A launch is priced off a curve, not a flat rate: across the protocols that already trade,
+// market value rises with locked value but slower than one-for-one, so this entry fits a line
+// through log market cap on log TVL and reads every pre-token protocol off that line. A sector
+// whose traded names sit above or below the line earns a small, shrunk correction — thin sectors
+// barely move the price — and recent growth and time running without a token nudge it a little
+// further, the way the starter nudged it. The nudge from growth is labelled honestly: growth
+// does not predict the ratio (the backtest in lib/model.ts measures that and finds about zero),
+// so it is a judgement tilt, not a validated signal. Anything that is really a wrapper, a bridge,
+// or a staked receipt of a coin people can already buy stays off the board, and no name is ever
+// singled out by hand — USDD stays on it because the sealed input records it as pre-token.
+// Every row is then costed for a $1,000 farm: the slice the model implies, three transactions at
+// an assumed gas price on the cheapest chain the protocol lists, a T-bill's return on the same
+// money over the hold, and a verdict that follows from the arithmetic — FARM, THIN or SKIP.
+// The entry proves the curve instead of asserting it: the library refits it leaving each traded
+// protocol out in turn, and again on pre-2024 names tested on newer ones, and the dashboard
+// carries those scores. Same sealed input always yields the same board: no clock, no dice, no
 // network, so running twice gives byte-for-byte the same files.
 //
 // A working token-radar-01 entry (Node 22, standard library only).
@@ -101,5 +106,9 @@ writeFileSync(join(out, 'dossier.json'), buildDossier(out, { text_max_bytes: TEX
 
 process.stdout.write(
   `token radar: ${snapshot.protocols.length} protocols, ${snapshot.watchlist.length} on the watchlist, ${board.length} rows scored (${radar.early_size} early, ${radar.live_size} live set aside)\n` +
+    `token radar: radar-3 fit a=${radar.backtest.fit.a} b=${radar.backtest.fit.b} R2=${radar.backtest.fit.r2} on ${radar.backtest.peers_n} live peers; ` +
+    `LOO radar3 x${radar.backtest.loo.radar3!.median_miss_x} vs flat x${radar.backtest.loo.flat!.median_miss_x} vs category-median x${radar.backtest.loo.category_median!.median_miss_x}; ` +
+    `time-split radar3 x${radar.backtest.time_split.scores.radar3!.median_miss_x} vs flat x${radar.backtest.time_split.scores.flat!.median_miss_x}\n` +
+    `token radar: farm verdicts FARM ${radar.verdict_counts.FARM} / THIN ${radar.verdict_counts.THIN} / SKIP ${radar.verdict_counts.SKIP}\n` +
     `token radar: wrote ${join(out, 'board.json')}, ${join(out, 'data.js')}, ${join(out, 'dashboard')} (3 files), ${join(out, 'screenshots')} (${shots.length} images) and ${join(out, 'dossier.json')}\n`,
 );
